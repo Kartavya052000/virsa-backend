@@ -9,6 +9,7 @@ const { MONGO_URL, PORT } = process.env;
 const authRoute = require("./Routes/AuthRoute");
 const postRoute = require("./Routes/PostRoute")
 const payRoute = require("./Routes/PayRoute")
+const bookRoute = require("./Routes/BookRoute")
 // app.use(cors({
 //     origin: [
 //       "http://localhost:3001",
@@ -36,11 +37,12 @@ app.use(cors({
   app.use("/", authRoute);
   app.use("/", postRoute);
   app.use("/", payRoute);
+  app.use("/", bookRoute);
   //   app.listen(PORT, () => {
 
   //   console.log(`Server is listening on port ${PORT}`);
   // });
-  app.listen(PORT, '0.0.0.0', () => {
+  app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });
 

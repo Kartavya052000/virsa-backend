@@ -18,47 +18,47 @@ module.exports.SignUp = async (req, res, next) => {
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
-    const concatenatedPhoneNumber = `+${code}${phoneNumber}`;
-console.log(concatenatedPhoneNumber)
+//     const concatenatedPhoneNumber = `+${code}${phoneNumber}`;
+// console.log(concatenatedPhoneNumber)
     // Generate random 6-digit OTP
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    // const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Send OTP to the provided phone number
-    client.verify.v2
-      .services(verifySid)
-      .verifications.create({ to: concatenatedPhoneNumber, channel: "sms" })
-      .then(() => {
-        // Hash the password
-        return bcrypt.hash(password, 10);
-      })
-      .then((hashedPassword) => {
-        // Create a new user
-        const newUser = new User({
-          fullname,
-          email,
-          password: hashedPassword,
-          code,
-          phoneNumber,
-          otpCode, // Store the OTP in the user object
-        });
+    // client.verify.v2
+    //   .services(verifySid)
+    //   .verifications.create({ to: concatenatedPhoneNumber, channel: "sms" })
+    //   .then(() => {
+    //     // Hash the password
+    //     return bcrypt.hash(password, 10);
+    //   })
+    //   .then((hashedPassword) => {
+    //     // Create a new user
+    //     const newUser = new User({
+    //       fullname,
+    //       email,
+    //       password: hashedPassword,
+    //       code,
+    //       phoneNumber,
+    //       otpCode, // Store the OTP in the user object
+    //     });
 
-        return newUser.save();
-      })
-      .then((newUser) => {
-        // Create JWT token
-        const token = createSecretToken(newUser._id);
+    //     return newUser.save();
+    //   })
+    //   .then((newUser) => {
+    //     // Create JWT token
+    //     const token = createSecretToken(newUser._id);
 
-        res.cookie("token", token, {
-          withCredentials: true,
-          httpOnly: false,
-        });
+    //     res.cookie("token", token, {
+    //       withCredentials: true,
+    //       httpOnly: false,
+    //     });
 
-        res.status(201).json({ message: "OTP sent for verification", success: true, token: token, role: "User", user: newUser });
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).json({ message: "Error in OTP verification", error: error.message });
-      });
+    //     res.status(201).json({ message: "OTP sent for verification", success: true, token: token, role: "User", user: newUser });
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     res.status(500).json({ message: "Error in OTP verification", error: error.message });
+    //   });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

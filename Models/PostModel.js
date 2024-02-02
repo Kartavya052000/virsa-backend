@@ -5,16 +5,16 @@ const commentSchema = new mongoose.Schema({
     _id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User', // Assuming your user model is named 'User'
-      required: true,
+      // required: true,
     },
     username: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
   comment: {
     type: String,
-    required: true,
+    // required: true,
   },
 });
 
@@ -39,6 +39,10 @@ const postSchema = new mongoose.Schema({
     },
   },
   comments: [commentSchema], // Use the commentSchema for comments
+  bookmarks:{
+    users:[{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // New field for bookmarks
+  } 
+
 });
 
 const Post = mongoose.model('Post', postSchema);
