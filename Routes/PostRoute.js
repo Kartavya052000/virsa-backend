@@ -5,7 +5,7 @@ const postController = require('../Controllers/PostController');
 const router = express.Router();
 const userVerification = require("../Middleware/AuthMiddleware")
 // Get all posts
-router.post('/get-post',userVerification, postController.getAllPosts);
+router.get('/get-post',userVerification, postController.getAllPosts);
 
 // Create a new post
 router.post('/create-post', postController.createPost);
