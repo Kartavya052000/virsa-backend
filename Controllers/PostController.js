@@ -14,20 +14,23 @@ exports.getAllPosts = async (req, res) => {
     // Get the user ID from the request (assuming it's stored in req.user._id)
     const userId = req.user._id;
 
-    // Iterate through each post and check if the user has bookmarked it
-    const postsWithBookmarks = posts.map(post => {
+    // Iterate through each post and check if the user has bookmarked and liked it
+    const postsWithStatus = posts.map(post => {
       // Check if the post's bookmarks array contains the user ID
       const isBookmarked = post.bookmarks.users.includes(userId);
-      // Add a 'bookmarked' key to the post object indicating whether the user has bookmarked it
-      return { ...post.toObject(), bookmarked: isBookmarked };
+      // Check if the post's likes array contains the user ID
+      const isLiked = post.likes.users.includes(userId);
+      // Add 'bookmarked' and 'liked' keys to the post object indicating whether the user has bookmarked and liked it
+      return { ...post.toObject(), bookmarked: isBookmarked, liked: isLiked };
     });
 
-    // Send the modified posts array with bookmarked status in the response
-    res.json(postsWithBookmarks);
+    // Send the modified posts array with bookmarked and liked status in the response
+    res.json(postsWithStatus);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 exports.createPost = async (req, res) => {
