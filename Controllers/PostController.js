@@ -9,6 +9,10 @@ exports.getAllPosts = async (req, res) => {
       // If group name is provided, filter posts by group name
       query.groupName = req.body.groupName;
     }
+        // If post ID is provided, filter posts by ID
+        if (req.body.postId) {
+          query._id = req.body.postId;
+        }
     const posts = await Post.find(query);
 
     // Get the user ID from the request (assuming it's stored in req.user._id)
