@@ -13,6 +13,7 @@ exports.getAllPosts = async (req, res) => {
         if (req.body.postId) {
           query._id = req.body.postId;
         }
+        console.log(query,"WWW")
     const posts = await Post.find(query);
 
     // Get the user ID from the request (assuming it's stored in req.user._id)
@@ -34,7 +35,31 @@ exports.getAllPosts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.postDetails = async(req,res)=>{
+  try {
+    const postId = req.params.postId;
+    console.log(postId,"postId")
+    // return
+    // Fetch the post by its ID
+    const post = await Post.findById(postId);
 
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Get the user ID from the request (assuming it's stored in req.user._id)
+    const userId = req.user._id;
+
+    // Check if the user has bookmarked and liked the post
+    const isBookmarked = post.bookmarks.users.includes(userId);
+    const isLiked = post.likes.users.includes(userId);
+
+    // Send the post details along with bookmarked and liked status in the response
+    res.json({ ...post.toObject(), bookmarked: isBookmarked, liked: isLiked });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
 
 exports.createPost = async (req, res) => {
