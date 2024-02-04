@@ -16,6 +16,10 @@ const commentSchema = new mongoose.Schema({
     type: String,
     // required: true,
   },
+   createdAt: {
+    type: Date,
+    default: Date.now, // Automatically set the timestamp to the current date and time
+  },
 });
 
 const postSchema = new mongoose.Schema({

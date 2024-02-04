@@ -18,7 +18,7 @@ exports.getAllPosts = async (req, res) => {
 
     // Get the user ID from the request (assuming it's stored in req.user._id)
     const userId = req.user._id;
-
+console.log(userId,"USerid")
     // Iterate through each post and check if the user has bookmarked and liked it
     const postsWithStatus = posts.map(post => {
       // Check if the post's bookmarks array contains the user ID
