@@ -115,8 +115,9 @@ exports.LikePost = async (req, res) => {
 //   // Comment on a post
 exports.CommentOnPost = async (req, res) => {
     try {
-      const { comment } = req.body;
-      console.log(req.body,"BODY")
+
+      const { comment } = req.params;
+      console.log(req.body,"====",req.params)
       const userId = req.user._id;
       const username = req.user.fullname; // Assuming your user object has a 'username' field
   console.log(username,"User")

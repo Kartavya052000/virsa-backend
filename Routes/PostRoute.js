@@ -11,7 +11,7 @@ router.get('/posts/:postId',userVerification, postController.postDetails);
 // Create a new post
 router.post('/create-post', postController.createPost);
 router.post('/like/:postId',userVerification, postController.LikePost)
-router.post('/comment/:postId',userVerification,postController.CommentOnPost)
+router.post('/comment/:postId/:comment',userVerification,postController.CommentOnPost)
 router.post('/bookmark/:postId',userVerification, postController.bookmarkPost);
 router.get('/bookmark-posts',userVerification, postController.UserBookmark);
 
