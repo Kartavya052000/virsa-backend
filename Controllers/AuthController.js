@@ -128,6 +128,10 @@ module.exports.Login = async (req, res, next) => {
       if (!user) {
         return res.json({ message: "Incorrect password or email" });
       }
+      // Check if the user is verified
+    if (!user.verified) {
+      return res.json({ message: "User not verified" });
+    }
       const auth = await bcrypt.compare(password, user.password);
       console.log(auth)
       if (!auth) {
@@ -135,16 +139,6 @@ module.exports.Login = async (req, res, next) => {
       }
   
       const token = createSecretToken(user._id);
-  
-      // if (user.isAdmin) {
-      //   // For admin users
-      //   res.cookie("adminToken", token, {
-      //     withCredentials: true,
-      //     httpOnly: false,
-      //   });
-      //   res.status(201).json({ message: "Admin logged in successfully", success: true, token: token,role:"Admin" });
-      // } else {
-      // For regular users
       res.cookie("token", token, {
         withCredentials: true,
         httpOnly: false,
