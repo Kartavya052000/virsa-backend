@@ -15,15 +15,21 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function () {
+      return this.provider === "local"; // Only required for local users
+    },
   },
   code: {
     type: String,
-    required: true,
+    required: function () {
+      return this.provider === "local"; // Only required for local users
+    },
   },
   phoneNumber: {
     type: String,
-    required: true,
+    required: function () {
+      return this.provider === "local"; // Only required for local users
+    },
   },
   nationality:{
     type:String
@@ -40,6 +46,21 @@ const userSchema = new mongoose.Schema({
     type:Boolean,
     default: false  // Default value is false
 
+  },
+  provider: {
+    type: String,
+    enum: ["local", "google"],
+    required: true,
+  },
+  googleId: {
+    type: String,
+    unique: function () {
+      return this.provider === "google"; // Set unique based on the provider
+    },
+    sparse: true, // Allow multiple null values
+    required: function () {
+      return this.provider === "google"; // Require for 'google' provider
+    }
   }
 });
 userSchema.index({ email: 1, verified: 1 }, { unique: true, partialFilterExpression: { verified: true } });

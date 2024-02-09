@@ -139,6 +139,29 @@ module.exports.Login = async (req, res, next) => {
       }
   
       const token = createSecretToken(user._id);
+      // res.cookie("token", token, {
+      //   withCredentials: true,
+      //   httpOnly: false,
+      // });
+      res.status(201).json({ message: "User logged in successfully", success: true, token: token, role: "User" ,user});
+      // }
+      next();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  module.exports.googleLogin = async (req, res, next) => {
+    try {
+      const { name, id,email } = req.body;
+      console.log(name, id, email,"YYYYYY");
+      let user = await User.findOneAndUpdate(
+        { googleId: id },
+        { fullname: name, email, provider: "google",verified:true },
+        { upsert: true, new: true }
+    );
+    
+  
+      const token = createSecretToken(user._id);
       res.cookie("token", token, {
         withCredentials: true,
         httpOnly: false,
