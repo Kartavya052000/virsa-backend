@@ -118,6 +118,26 @@ user.verified =true
     res.status(500).json({ message: "Internal server error" });
   }
 };
+module.exports.ResetPassword = async (req,res,next) => {
+try{
+  const {newPassword } = req.body;
+  const userId = req.user._id;
+console.log(userId)
+  const user = await User.findById(userId);
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  // Update the user's password in the database
+  user.password = hashedPassword;
+  // await user.save();
+  await user.save({ validateBeforeSave: false }); // Exclude validation
+
+
+  res.status(200).json({ message: "Password changed successfully" });
+} catch (error) {
+  console.error(error);
+  res.status(500).json({ message: "Internal server error" });
+}
+}
 module.exports.Login = async (req, res, next) => {
     try {
       const { email, password } = req.body;
