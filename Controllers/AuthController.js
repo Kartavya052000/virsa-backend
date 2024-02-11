@@ -75,7 +75,7 @@ module.exports.SignUp = async (req, res, next) => {
 
 module.exports.VerifyOTP = async (req, res, next) => {
   try {
-    const { email, enteredOTP } = req.body;
+    const { email, enteredOTP,location } = req.body;
 console.log(enteredOTP,"123123123123",email)
     // Retrieve the signup details from the User model
     const user = await User.findOne({ otp:enteredOTP });
@@ -93,25 +93,19 @@ console.log(user.otp,"OTPPPPPP")
       return res.status(400).json({ message: "Incorrect OTP" });
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+ if(location=="signup"){
+  user.verified =true
+  const token = createSecretToken(user._id);
+ await user.save();
 
-    // Create a new user
-    // const newUser = new User({
-    //   fullname: user.fullname,
-    //   email: user.email,
-    //   password: hashedPassword,
-    //   code: user.code,
-    //   phoneNumber: user.phoneNumber,
-    // });
-user.verified =true
-    const token = createSecretToken(user._id);
-    await user.save();
 
-    // Delete the temporary signup data from the User model after successful signup
-    // await User.deleteOne({ email });
+  res.status(201).json({ message: "User logged in successfully", success: true, token: token, role: "User", user: user })
+ }else{
+  res.status(201).json({ message: "Otp Verified Successfully", success: true })
 
-    res.status(201).json({ message: "User logged in successfully", success: true, token: token, role: "User", user: user });
+ }
+
+
     next();
   } catch (error) {
     console.error(error);
@@ -138,38 +132,56 @@ console.log(userId)
   res.status(500).json({ message: "Internal server error" });
 }
 }
-module.exports.Login = async (req, res, next) => {
-    try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return res.json({ message: "All fields are required" });
-      }
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.json({ message: "Incorrect password or email" });
-      }
-      // Check if the user is verified
-    if (!user.verified) {
-      return res.json({ message: "User not verified" });
-    }
-      const auth = await bcrypt.compare(password, user.password);
-      console.log(auth)
-      if (!auth) {
-        return res.json({ message: "Incorrect password or email" });
-      }
+module.exports.ResetPasswordwithoutLogin = async (req,res,next) => {
+  try{
+    const {email,newPassword } = req.body;
+    const user = await User.findOne({email});
   
-      const token = createSecretToken(user._id);
-      // res.cookie("token", token, {
-      //   withCredentials: true,
-      //   httpOnly: false,
-      // });
-      res.status(201).json({ message: "User logged in successfully", success: true, token: token, role: "User" ,user});
-      // }
-      next();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // Update the user's password in the database
+    user.password = hashedPassword;
+    // await user.save();
+    await user.save({ validateBeforeSave: false }); // Exclude validation
+  
+  
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+  }
+  module.exports.Login = async (req, res, next) => {
+      try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+          return res.json({ message: "All fields are required" });
+        }
+        const user = await User.findOne({ email });
+        if (!user) {
+          return res.status(404).json({ message: "Incorrect password or email" });
+        }
+        // Check if the user is verified
+      if (!user.verified) {
+        return res.json({ message: "User not verified" });
+      }
+        const auth = await bcrypt.compare(password, user.password);
+        console.log(auth)
+        if (!auth) {
+          return res.json({ message: "Incorrect password or email" });
+        }
+    
+        const token = createSecretToken(user._id);
+        // res.cookie("token", token, {
+        //   withCredentials: true,
+        //   httpOnly: false,
+        // });
+        res.status(201).json({ message: "User logged in successfully", success: true, token: token, role: "User" ,user});
+        // }
+        next();
+      } catch (error) {
+        console.error(error);
+      }
+    };
   module.exports.googleLogin = async (req, res, next) => {
     try {
       const { name, id,email } = req.body;
@@ -211,3 +223,35 @@ module.exports.Login = async (req, res, next) => {
       res.status(500).json({ message: "Internal server error" });
     }
   };
+
+  module.exports.ForgotPassword = async (req, res, next) => {
+    try {
+      const { email } = req.body;
+      console.log("email: " + email)
+      let existingUser = await User.findOne({ email });
+  
+      // Check if email already exists
+      if (!existingUser) {
+        if (!existingUser.verified) {
+          // Delete the existing user with unverified status
+          return res.status(400).json({ message: "Email not Verified" });
+        }
+          return res.status(400).json({ message: "Email Does not exists, Please Signup" });
+      }
+      const { otp, expirationTime } = generateOTP();
+ 
+       existingUser.otp = otp;
+       existingUser.otpExpiration = expirationTime;
+  await existingUser.save({ validateBeforeSave: false }); // Exclude validation
+
+      await sendOTPByEmail(email, otp);
+  
+          res.status(201).json({ message: "Otp Sent  successfully", success: true});
+          next();
+        
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+  
