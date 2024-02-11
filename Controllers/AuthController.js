@@ -92,16 +92,16 @@ console.log(user.otp,"OTPPPPPP")
     if (enteredOTP != user.otp) {
       return res.status(400).json({ message: "Incorrect OTP" });
     }
+    const token = createSecretToken(user._id);
 
  if(location=="signup"){
   user.verified =true
-  const token = createSecretToken(user._id);
  await user.save();
 
 
   res.status(201).json({ message: "User logged in successfully", success: true, token: token, role: "User", user: user })
  }else{
-  res.status(201).json({ message: "Otp Verified Successfully", success: true })
+  res.status(201).json({ message: "Otp Verified Successfully", success: true, token: token, })
 
  }
 
