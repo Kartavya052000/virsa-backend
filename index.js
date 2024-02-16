@@ -10,7 +10,8 @@ const authRoute = require("./Routes/AuthRoute");
 const postRoute = require("./Routes/PostRoute")
 const payRoute = require("./Routes/PayRoute")
 const bookRoute = require("./Routes/BookRoute")
-const Grouproute = require("./Routes/GroupRoute")
+const Grouproute = require("./Routes/GroupRoute");
+const Contactroute = require("./Routes/ContactRoute")
 // app.use(cors({
 //     origin: [
 //       "http://localhost:3001",
@@ -40,6 +41,7 @@ app.use(cors({
   app.use("/", payRoute);
   app.use("/", bookRoute);
   app.use("/",Grouproute)
+  app.use("/",Contactroute)
   //   app.listen(PORT, () => {
 
   //   console.log(`Server is listening on port ${PORT}`);
