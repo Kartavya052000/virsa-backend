@@ -59,6 +59,7 @@ module.exports.SignUp = async (req, res, next) => {
           nationality,
           otp: otp, // Save OTP in the user document
           otpExpiration: expirationTime,
+          provider:"local"
         });
         const token = createSecretToken(newUser._id);
         await newUser.save();

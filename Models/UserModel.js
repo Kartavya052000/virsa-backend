@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
       return this.provider === "local"; // Only required for local users
     },
   },
-  code: {
+  countryCode: {
     type: String,
     required: function () {
       return this.provider === "local"; // Only required for local users
