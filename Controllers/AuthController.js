@@ -32,7 +32,7 @@ const sendOTPByEmail = async (email, otp) => {
 };
 module.exports.SignUp = async (req, res, next) => {
   try {
-    const { fullname, email, password, code, phoneNumber,nationality } = req.body;
+    const { fullname, email, password, countryCode, phoneNumber,nationality } = req.body;
     let existingUser = await User.findOne({ email });
 
     // Check if email already exists
@@ -54,7 +54,7 @@ module.exports.SignUp = async (req, res, next) => {
           fullname,
           email,
           password: hashedPassword,
-          code,
+          countryCode,
           phoneNumber,
           nationality,
           otp: otp, // Save OTP in the user document
