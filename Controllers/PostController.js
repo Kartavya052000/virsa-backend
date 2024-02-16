@@ -28,9 +28,9 @@ console.log(userId,"USerid")
       // Add 'bookmarked' and 'liked' keys to the post object indicating whether the user has bookmarked and liked it
       return { ...post.toObject(), bookmarked: isBookmarked, liked: isLiked };
     });
-
+const postreverse= postsWithStatus.reverse()
     // Send the modified posts array with bookmarked and liked status in the response
-    res.json(postsWithStatus);
+    res.json(postreverse);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
