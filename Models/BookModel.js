@@ -17,6 +17,9 @@ const bookSchema = new mongoose.Schema({
     link:{
         type:String,
         
+    },
+    amount:{
+        type:Number
     }
 });
 
