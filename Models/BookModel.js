@@ -13,7 +13,11 @@ const bookSchema = new mongoose.Schema({
     purchasedBy: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }]
+    }],
+    link:{
+        type:String,
+        
+    }
 });
 
 const Book = mongoose.model('Book', bookSchema);
