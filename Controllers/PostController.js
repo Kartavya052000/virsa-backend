@@ -178,8 +178,18 @@ exports.UserBookmark = async (req, res) => {
   try {
     // Find all posts where the user has bookmarked
     const bookmarkedPosts = await Post.find({ 'bookmarks.users': userId });
+    const postsWithStatus = bookmarkedPosts.map(post => {
+      // Check if the post's bookmarks array contains the user ID
+      const isBookmarked = post.bookmarks.users.includes(userId);
+      // Check if the post's likes array contains the user ID
+      const isLiked = post.likes.users.includes(userId);
+      // Add 'bookmarked' and 'liked' keys to the post object indicating whether the user has bookmarked and liked it
+      return { ...post.toObject(), bookmarked: isBookmarked, liked: isLiked };
+    });
+const postreverse= postsWithStatus.reverse()
+res.json(postreverse);
 
-    res.json(bookmarkedPosts);
+    // res.json(bookmarkedPosts);
   } catch (error) {
     console.error('Error fetching bookmarked posts:', error);
     res.status(500).json({ error: 'Internal Server Error' });

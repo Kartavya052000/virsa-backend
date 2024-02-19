@@ -10,8 +10,8 @@ exports.Pay= async (req, res) => {
       {apiVersion: '2023-10-16'}
     );
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 1,
-      currency: 'usd',
+      amount: 109900, // Amount in INR (smallest currency unit)
+      currency: 'inr',
       customer: customer.id,
       // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
       automatic_payment_methods: {
