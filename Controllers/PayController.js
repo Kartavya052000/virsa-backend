@@ -1,5 +1,8 @@
-const stripe = require('stripe')('sk_test_51ODkV4AH7tWiIHmOZh1w3EY7dSDEMjjXjiFgnN5NSkInnwc4I8wj5s8jNypvM59wHJPRdqcK4pojdMQqGGEPxNs80063qbmqIg');
+//kartavya test
+// const stripe = require('stripe')('sk_test_51ODkV4AH7tWiIHmOZh1w3EY7dSDEMjjXjiFgnN5NSkInnwc4I8wj5s8jNypvM59wHJPRdqcK4pojdMQqGGEPxNs80063qbmqIg');
 
+//virsa test
+const stripe = require('stripe')('sk_test_51OlNSaGFRX0mGJ8pt0b4PJVdj6J13KjPZz3g4JEP8TblhnBClX5VRtWB4MutyBa6isQNavWYT4irFWhHRc9y7Gyl00KIE9BdgY');
 
 
 exports.Pay= async (req, res) => {
@@ -10,7 +13,7 @@ exports.Pay= async (req, res) => {
       {apiVersion: '2023-10-16'}
     );
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 109900, // Amount in INR (smallest currency unit)
+      amount: 5000, // Amount in INR (smallest currency unit)
       currency: 'inr',
       customer: customer.id,
       // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
@@ -23,6 +26,12 @@ exports.Pay= async (req, res) => {
       paymentIntent: paymentIntent.client_secret,
       ephemeralKey: ephemeralKey.secret,
       customer: customer.id,
-      publishableKey: 'pk_test_51ODkV4AH7tWiIHmOF0t9QJE4KMdeXjC86OOcFlIuZ6wX9enYJ2E5LNpCIF1pR5jSmyQL28kr9UFXyyqzXuN7vBUL007BzK9dRh'
+      // publishableKey: 'pk_test_51ODkV4AH7tWiIHmOF0t9QJE4KMdeXjC86OOcFlIuZ6wX9enYJ2E5LNpCIF1pR5jSmyQL28kr9UFXyyqzXuN7vBUL007BzK9dRh'
+      // below is vira test
+            publishableKey: 'pk_test_51OlNSaGFRX0mGJ8pvxXdIbNolXrqf2gMXhFTCNV8wILFiFSl2eQ2tXzkQEhOXdrCYieM7s5kOMphjyyddzwWUADA00BR26k7v8'
+
     });
+    // kartavya key
+      // publishableKey: 'pk_test_51ODkV4AH7tWiIHmOF0t9QJE4KMdeXjC86OOcFlIuZ6wX9enYJ2E5LNpCIF1pR5jSmyQL28kr9UFXyyqzXuN7vBUL007BzK9dRh'
+      //virsa key
   }

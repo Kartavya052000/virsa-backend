@@ -59,6 +59,10 @@ const PDF = mongoose.model('PDF', pdfSchema);
 
 // Set up multer storage for PDF uploads
 const storage = multer.memoryStorage();
+// const storage = multer.memoryStorage({
+//   // Set a higher memory limit (e.g., 10 MB)
+//   limits: { fileSize: 60 * 1024 * 1024 }
+// });
 const upload = multer({ storage: storage });
 app.use(upload.single('pdf'));
 app.post('/upload', async (req, res) => {

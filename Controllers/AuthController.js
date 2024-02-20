@@ -255,4 +255,39 @@ module.exports.ResetPasswordwithoutLogin = async (req,res,next) => {
       res.status(500).json({ message: "Internal server error" });
     }
   };
+  module.exports.ResendOTP = async (req, res, next) => {
+    try {
+      const { email } = req.body;
+  
+      // Find the user by email
+      const existingUser = await User.findOne({ email });
+  
+      // Check if user exists
+      if (!existingUser) {
+        return res.status(400).json({ message: "Email does not exist" });
+      }
+  
+      // // Check if user is verified
+      // if (!existingUser.verified) {
+      //   return res.status(400).json({ message: "Email not verified" });
+      // }
+  
+      // Generate new OTP and expiration time
+      const { otp, expirationTime } = generateOTP();
+  
+      // Update user's OTP and OTP expiration time
+      existingUser.otp = otp;
+      existingUser.otpExpiration = expirationTime;
+      await existingUser.save();
+  
+      // Send OTP via email
+      await sendOTPByEmail(email, otp);
+  
+      // Respond with success message
+      res.status(201).json({ message: "OTP Resent successfully", success: true });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
   
