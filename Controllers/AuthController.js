@@ -77,11 +77,12 @@ module.exports.SignUp = async (req, res, next) => {
 module.exports.VerifyOTP = async (req, res, next) => {
   try {
     const { email, enteredOTP,location } = req.body;
-console.log(enteredOTP,"123123123123",email)
     // Retrieve the signup details from the User model
     const user = await User.findOne({ otp:enteredOTP });
     if (!user) {
-      return res.status(400).json({ message: "Signup details not found" });
+      // return res.status(400).json({ message: "Signup details not found" });
+      return res.status(400).json({ message: "Incorrect OTP" });
+
     }
 console.log(user.otp,"OTPPPPPP")
     // Check if OTP is expired
@@ -224,7 +225,35 @@ module.exports.ResetPasswordwithoutLogin = async (req,res,next) => {
       res.status(500).json({ message: "Internal server error" });
     }
   };
-
+module.exports.EditProfile = async (req,res,next)=>{
+    try {
+      // Extract the user ID from the authenticated user's token or session
+      const userId = req.user._id;
+  
+      // Extract updated profile data from the request body
+      const { fullname, email, countryCode, phoneNumber, nationality } = req.body;
+  
+      // Find the user profile by ID and update it
+      const updatedUserProfile = await User.findByIdAndUpdate(userId, {
+        fullname,
+        email,
+        countryCode,
+        phoneNumber,
+        nationality,
+      }, { new: true });
+  
+      if (!updatedUserProfile) {
+        return res.status(404).json({ message: 'User profile not found' });
+      }
+  
+      res.status(200).json({ success: true, user: updatedUserProfile });
+      next()
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  
+}
   module.exports.ForgotPassword = async (req, res, next) => {
     try {
       const { email } = req.body;
