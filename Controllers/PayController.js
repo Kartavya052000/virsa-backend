@@ -8,6 +8,8 @@
 const stripe = require('stripe')('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');
 
 exports.Pay= async (req, res) => {
+  const{amount}=req.body
+  console.log(amount)
     // Use an existing Customer ID if this is a returning customer.
     const customer = await stripe.customers.create();
     const ephemeralKey = await stripe.ephemeralKeys.create(
@@ -15,9 +17,11 @@ exports.Pay= async (req, res) => {
       {apiVersion: '2023-10-16'}
     );
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 5000, // Amount in INR (smallest currency unit)
+      // amount: amount*100, // Amount in INR (smallest currency unit)
+      amount: 1000, // Amount in INR (smallest currency unit)
       currency: 'inr',
       customer: customer.id,
+      
       // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
       automatic_payment_methods: {
         enabled: true,
