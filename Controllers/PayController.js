@@ -8,7 +8,7 @@ const stripe = require('stripe')(stripe_secret);
 exports.Pay= async (req, res) => {
   const{amount}=req.body
   console.log(amount)
-console.log(stripe_secret)
+// console.log(stripe_secret)
 
     // Use an existing Customer ID if this is a returning customer.
     const customer = await stripe.customers.create();
