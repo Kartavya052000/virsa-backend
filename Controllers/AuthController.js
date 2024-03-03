@@ -238,7 +238,6 @@ module.exports.EditProfile = async (req,res,next)=>{
         fullname,
         email,
         countryCode,
-        phoneNumber,
         nationality,
       }, { new: true });
   

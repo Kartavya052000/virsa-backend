@@ -104,6 +104,32 @@ app.get('/pdfs/:id', async (req, res) => {
     res.status(500).send('Error fetching PDF');
   }
 });
+// Add this code after the definition of other routes and before app.listen()
+
+// Define schema for countries collection
+const countrySchema = new mongoose.Schema({
+  name: String,
+  dial_code: String,
+  code: String
+});
+
+// Create Mongoose model for countries
+const Country = mongoose.model('Country', countrySchema);
+
+// Define route for fetching countries data
+app.get('/countries', async (req, res) => {
+  try {
+    // Fetch all countries from the MongoDB collection
+    const countries = await Country.find({}, { _id: 0 }); // Exclude _id field from the response
+
+    // Send countries data as a JSON response
+    res.json(countries);
+  } catch (error) {
+    console.error('Error fetching countries:', error);
+    res.status(500).send('Error fetching countries');
+  }
+});
+
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is listening on port ${PORT}`);
   });
