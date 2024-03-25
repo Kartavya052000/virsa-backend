@@ -207,6 +207,30 @@ module.exports.ResetPasswordwithoutLogin = async (req,res,next) => {
       console.error(error);
     }
   };
+  module.exports.appleLogin = async (req, res, next) => {
+    try {
+      const { name, id, email } = req.body;
+      console.log(name, id, email, "YYYYYY");
+  
+      let user = await User.findOneAndUpdate(
+        { appleId: id },
+        { $setOnInsert: { fullname: name, email }, $set: { provider: "apple", verified: true } },
+        { upsert: true, new: true }
+      );
+  
+      const token = createSecretToken(user._id);
+      res.cookie("token", token, {
+        withCredentials: true,
+        httpOnly: false,
+      });
+      res.status(201).json({ message: "User logged in successfully", success: true, token, role: "User", user });
+      next();
+    } catch (error) {
+      console.error(error);
+      // Handle error appropriately, maybe send an error response
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
   module.exports.GetMyProfile = async (req, res, next) => {
     try {
       // Extract the user ID from the authenticated user's token

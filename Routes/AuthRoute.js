@@ -1,9 +1,10 @@
 const router = require('express').Router()
-const {Login,SignUp, GetMyProfile, VerifyOTP, googleLogin, ResetPassword, ForgotPassword, ResetPasswordwithoutLogin, ResendOTP, EditProfile} = require("../Controllers/AuthController")
+const {Login,SignUp, GetMyProfile, VerifyOTP, googleLogin, ResetPassword, ForgotPassword, ResetPasswordwithoutLogin, ResendOTP, EditProfile, appleLogin} = require("../Controllers/AuthController")
 const userVerification = require('../Middleware/AuthMiddleware')
 
 router.post('/login', Login)
 router.post('/login-google', googleLogin)
+router.post('/login-apple', appleLogin)
 router.post('/signup', SignUp)
 router.post('/verify-otp', VerifyOTP)
 router.post('/resend-otp', ResendOTP)

@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema({
   },
   provider: {
     type: String,
-    enum: ["local", "google"],
+    enum: ["local", "google","apple"],
     required: true,
   },
   googleId: {
@@ -60,6 +60,16 @@ const userSchema = new mongoose.Schema({
     sparse: true, // Allow multiple null values
     required: function () {
       return this.provider === "google"; // Require for 'google' provider
+    }
+  },
+  appleId: {
+    type: String,
+    unique: function () {
+      return this.provider === "apple"; // Set unique based on the provider
+    },
+    sparse: true, // Allow multiple null values
+    required: function () {
+      return this.provider === "apple"; // Require for 'google' provider
     }
   }
 });
