@@ -342,4 +342,56 @@ module.exports.EditProfile = async (req,res,next)=>{
       res.status(500).json({ message: "Internal server error" });
     }
   };
+
+  module.exports.DeleteAccount = async(req, res, next) =>{
+    try {
+      // Extract user ID from the authenticated user's token or session
+      const userId = req.user._id;
+  
+      // Find the user in the database
+      const user = await User.findById(userId);
+  
+      // Check if the user exists
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      await deleteLikesAndComments(userId);
+
+      // Delete the user account from the database
+      await user.deleteOne({_id:userId});
+  
+      // Respond with a success message
+      res.status(200).json({ message: 'User account deleted successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+  const Post = require('../Models/PostModel');
+
+// Function to delete all likes and comments by a user when their account is deleted
+const deleteLikesAndComments = async (userId) => {
+  try {
+    // Find all posts where the user has liked or commented
+    const postsToUpdate = await Post.find({ $or: [{ 'likes.users': userId }, { 'comments.user._id': userId }] });
+
+    // Iterate through each post and remove the user's ID from likes and comments
+    postsToUpdate.forEach(async (post) => {
+      // Remove the user's ID from likes
+      post.likes.users.pull(userId);
+      
+      // Remove comments where the user's ID matches
+      post.comments = post.comments.filter(comment => comment.user._id !== userId);
+console.log(post.comments,"PPPP")
+      // Update the count of unique users who liked the post
+      post.likes.count = post.likes.users.length;
+
+      // Save the updated post
+      await post.save();
+    });
+  } catch (error) {
+    console.error('Error deleting likes and comments:', error);
+    throw error; // Rethrow the error to handle it in the calling function
+  }
+};
   
